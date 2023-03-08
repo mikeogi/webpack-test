@@ -1,22 +1,15 @@
 import logo from './logo.svg';
 import { Global, css } from '@emotion/react'
 import './App.css';
-import { createGlobalStyle } from 'styled-components';
- 
-const GlobalStyle = createGlobalStyle`
-  p {
-    color: orange;
-  }
-`;
 
 function App() {
   return (
     <div className="App">
-      <GlobalStyle />
       <Global
         styles={css`
           .some-class {
             color: hotpink !important;
+            background: linear-gradient(to bottom, white, black);
           }
         `}
       />

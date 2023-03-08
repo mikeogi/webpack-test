@@ -27,15 +27,30 @@
     <title>React App</title>
   </head>
   <body>
-    <!-- 
-      <%= JSON.stringify(webpackConfig.output) %>
-     -->
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
 
-    <script type="text/javascript" id="my-script"></script>
+    <!-- 
+      <%= JSON.stringify(compilation.assets) %>
+      <%= JSON.stringify(webpackConfig.output) %>
+     -->
 
-    <script type="text/javascript">
-    </script>
+    <!-- <script defer="defer">
+      <% /*
+      The following line is a workaround for scripts that insert .js code into the generated .html file.
+      Because this is set here, "inject: false" is set in webpack-config.js in plugins.HtmlWebpackPlugin
+      */ %>
+      <%= compilation.assets[webpackConfig.output.filename()].source() %>
+  </script>  -->
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
   </body>
 </html>
