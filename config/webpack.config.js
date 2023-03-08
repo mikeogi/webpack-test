@@ -6,6 +6,7 @@ const webpack = require('webpack');
 const resolve = require('resolve');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
+const ScriptExtHtmlWebpackPlugin = require('script-ext-html-webpack-plugin');
 const autoprefixer = require('autoprefixer');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -419,14 +420,17 @@ module.exports = function (webpackEnv) {
             },
             // Process application JS with Babel.
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
-            {
-              test: /\inline.js$/,
-              use: 'raw-loader',
-              // loader: require.resolve('babel-loader'),
-              // type: 'asset/source'
-            },
+            // {
+            //   test: /\inline.js$/,
+            //   use: {
+            //     loader: 'raw-loader'
+            //   },
+            //   // loader: require.resolve('babel-loader'),
+            //   // type: 'asset/source'
+            // },
             {
               test: /\.(js|mjs|jsx|ts|tsx)$/,
+              exclude: /\inline.js$/,
               include: paths.appSrc,
               loader: require.resolve('babel-loader'),
               options: {
@@ -460,7 +464,7 @@ module.exports = function (webpackEnv) {
             // Unlike the application JS, we only compile the standard ES features.
             {
               test: /\.(js|mjs)$/,
-              exclude: /@babel(?:\/|\\{1,2})runtime/,
+              exclude: [/@babel(?:\/|\\{1,2})runtime/, /\inline.js$/],
               loader: require.resolve('babel-loader'),
               options: {
                 babelrc: false,
@@ -550,7 +554,7 @@ module.exports = function (webpackEnv) {
             },
             {
               test: cssRegex,
-              exclude: cssModuleRegex,
+              exclude: [cssModuleRegex, /\inline.css$/],
               use: getStyleLoaders({
                 importLoaders: 1,
                 sourceMap: isEnvProduction
@@ -650,6 +654,8 @@ module.exports = function (webpackEnv) {
           {
             inject: true,
             template: paths.appHtml,
+            excludeChunks: ['inlineJs'],
+            excludeAssets: [/inline.js/],
           },
           isEnvProduction
             ? {
@@ -669,7 +675,24 @@ module.exports = function (webpackEnv) {
             : undefined
         )
       ),
-      new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/inline/]),
+
+      // new ScriptExtHtmlWebpackPlugin({
+      //   custom: [
+      //     {
+      //       test: /\inline.js$/,
+      //       attribute: 'id',
+      //       value: 'inline-script'
+      //     },
+      //     {
+      //       test: /\inline.js$/,
+      //       attribute: 'async'
+      //     },
+      //   ],
+      //   inline: /\inline.js$/
+      // }),
+
+      // new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/inline/]),
+
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       // https://github.com/facebook/create-react-app/issues/5358
